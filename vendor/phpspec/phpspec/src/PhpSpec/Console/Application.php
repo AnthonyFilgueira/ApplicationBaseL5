@@ -14,6 +14,8 @@
 namespace PhpSpec\Console;
 
 use PhpSpec\Console\Prompter\Factory;
+use PhpSpec\Loader\StreamWrapper;
+use PhpSpec\Process\Context\JsonExecutionContext;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,7 +31,7 @@ use RuntimeException;
 class Application extends BaseApplication
 {
     /**
-     * @var \PhpSpec\ServiceContainer
+     * @var ServiceContainer
      */
     private $container;
 
@@ -69,6 +71,10 @@ class Application extends BaseApplication
             );
         });
 
+        $this->container->setShared('process.executioncontext', function () {
+            return JsonExecutionContext::fromEnv($_SERVER);
+        });
+
         $assembler = new ContainerAssembler();
         $assembler->build($this->container);
 
@@ -80,7 +86,20 @@ class Application extends BaseApplication
 
         $this->setDispatcher($this->container->get('console_event_dispatcher'));
 
-        $this->container->get('console.io')->setConsoleWidth($this->getTerminalWidth());
+        if (class_exists('\Symfony\Component\Console\Terminal')) {
+            $terminal = new \Symfony\Component\Console\Terminal();
+            $consoleWidth = $terminal->getWidth();
+        } else {
+            $consoleWidth = $this->getTerminalWidth();
+        }
+
+        $this->container->get('console.io')->setConsoleWidth($consoleWidth);
+
+        StreamWrapper::reset();
+        foreach ($this->container->getByPrefix('loader.resource_loader.spec_transformer') as $transformer) {
+            StreamWrapper::addTransformer($transformer);
+        }
+        StreamWrapper::register();
 
         return parent::doRun($input, $output);
     }
@@ -128,6 +147,8 @@ class Application extends BaseApplication
     {
         $config = $this->parseConfigurationFile($input);
 
+        $this->populateContainerParameters($container, $config);
+
         foreach ($config as $key => $val) {
             if ('extensions' === $key && is_array($val)) {
                 foreach ($val as $class) {
@@ -142,7 +163,14 @@ class Application extends BaseApplication
 
                     $extension->load($container);
                 }
-            } else {
+            }
+        }
+    }
+
+    private function populateContainerParameters(ServiceContainer $container, array $config)
+    {
+        foreach ($config as $key => $val) {
+            if ('extensions' !== $key) {
                 $container->setParam($key, $val);
             }
         }
@@ -166,18 +194,57 @@ class Application extends BaseApplication
             $paths = array($customPath);
         }
 
-        $config = array();
+        $config = $this->extractConfigFromFirstParsablePath($paths);
+
+        if ($homeFolder = getenv('HOME')) {
+            $config = array_replace_recursive($this->parseConfigFromExistingPath($homeFolder.'/.phpspec.yml'), $config);
+        }
+
+        return $config;
+    }
+
+    /**
+     * @param array $paths
+     *
+     * @return array
+     */
+    private function extractConfigFromFirstParsablePath(array $paths)
+    {
         foreach ($paths as $path) {
-            if ($path && file_exists($path) && $parsedConfig = Yaml::parse(file_get_contents($path))) {
-                $config = $parsedConfig;
-                break;
+            $config = $this->parseConfigFromExistingPath($path);
+            if (!empty($config)) {
+                return $this->addPathsToEachSuiteConfig(dirname($path), $config);
             }
         }
 
-        if ($homeFolder = getenv('HOME')) {
-            $localPath = $homeFolder.'/.phpspec.yml';
-            if (file_exists($localPath) && $parsedConfig = Yaml::parse(file_get_contents($localPath))) {
-                $config = array_replace_recursive($parsedConfig, $config);
+        return array();
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return array
+     */
+    private function parseConfigFromExistingPath($path)
+    {
+        if (!file_exists($path)) {
+            return array();
+        }
+
+        return Yaml::parse(file_get_contents($path));
+    }
+
+    /**
+     * @param string $configDir
+     * @param array $config
+     *
+     * @return array
+     */
+    private function addPathsToEachSuiteConfig($configDir, $config)
+    {
+        if (isset($config['suites']) && is_array($config['suites'])) {
+            foreach ($config['suites'] as $suiteKey => $suiteConfig) {
+                $config['suites'][$suiteKey] = str_replace('%paths.config%', $configDir, $suiteConfig);
             }
         }
 

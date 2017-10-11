@@ -31,14 +31,14 @@ Guia de instalacion
    De Todas Maneras Aqui Estan.
 
         'Illuminate\View\ViewServiceProvider',
-        'Illuminate\Html\HtmlServiceProvider',
+        'Collective\Html\HtmlServiceProvider',
         'Laracasts\Flash\FlashServiceProvider',
         'Innodite\Generator\GeneratorServiceProvider'
         
    Tambien debes agregas los alias a config/app.php
 
-		'Form'  => 'Illuminate\Html\FormFacade',
-		'HTML'  => 'Illuminate\Html\HtmlFacade',
+		'Form'  => 'Collective\Html\FormFacade',
+		'HTML'  => 'Collective\Html\HtmlFacade',
 		'Flash' => 'Laracasts\Flash\Flash'
 
 4. Carga del archivo generator.php para que reconozca los comandos de la libreria
@@ -115,7 +115,7 @@ Ejemplo de uso
 
 y alli colocaran las traducciones ejemplo 
 
-Para Poder Usar los dataTables deben Descargar los Siguientes Archivos y copiarlos en
+Para Poder Usar los dataTables sino estan usando nuestra Aplicacion Base deben Descargar los Siguientes Archivos y copiarlos en
 
 Carpeta /public/js
     https://code.jquery.com/jquery-1.11.3.js

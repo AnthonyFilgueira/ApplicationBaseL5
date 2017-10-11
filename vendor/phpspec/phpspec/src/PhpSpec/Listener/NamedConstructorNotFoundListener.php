@@ -79,6 +79,13 @@ class NamedConstructorNotFoundListener implements EventSubscriberInterface
                     'arguments' => $arguments
                 ));
                 $event->markAsWorthRerunning();
+
+                if (!method_exists($classname, '__construct')) {
+                    $this->generator->generate($resource, 'private-constructor', array(
+                        'name' => $method,
+                        'arguments' => $arguments
+                    ));
+                }
             }
         }
     }
