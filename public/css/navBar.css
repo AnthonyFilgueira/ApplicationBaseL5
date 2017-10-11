@@ -1,0 +1,100 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+  Created on : 16/06/2015, 01:05:59 AM
+    Author     : Innodite.com
+*/
+nav{
+    //margin-bottom: 60px;
+}
+.navbar{     
+    background-color: #1c94c4; 
+    
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus{
+    color: white;
+}
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+   text-align: center;
+    margin-left: 0%;
+}
+.navbar-toggle{
+    background-color: black;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
+    background-color: #66afe9;
+    
+}
+
+.navbar-default .navbar-toggle .icon-bar{
+   
+    background-color: white;
+}
+.navbar-default .navbar-nav > li > a{
+    color: white;
+}
+.navbar-default .navbar-brand{
+    color: white;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
+    background-color: #66afe9;
+    color: white;
+}
+/*
+*Estilos Para la Clase Navbar Fixed Top
+
+.nav > li > a:hover, .nav > li > a:focus{
+    background-color: #66afe9;
+}
+.navbar-nav > li > a{
+    color: white;
+}
+a{
+    color:white;
+}
+.navbar-fixed-top .navbar-brand:hover, .navbar-default .navbar-brand:focus{
+    color: black;
+}
+.navbar-fixed-top .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
+    background-color: #66afe9;
+}
+
+.navbar-fixed-top .navbar-toggle .icon-bar{
+   
+    background-color: white;
+}
+.navbar-fixed-top .navbar-nav > li > a{
+    color: white;
+}
+.navbar-fixed-top .navbar-brand{
+    color: white;
+}
+.navbar-fixed-top .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
+    background-color: #66afe9;
+    color: #000;
+}
+*/
+/**
+*Estilos Para la Clase Navbar Default Dropdown Menu
+**/
+.navbar-default .navbar-nav .open .dropdown-menu > li > a{
+    color: white;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus{
+  color: white;
+  background-color: #66afe9;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus{
+    color: white;
+    background-color: #66afe9;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{
+     background-color: #66afe9;
+     color: white;
+}
+.dropdown-menu{
+    background-color: #1c94c4;
+}

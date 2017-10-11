@@ -1,0 +1,19 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16/06/2015, 01:05:59 AM
+    Author     : innodite.com
+*/
+
+.panel-default .panel-heading{
+    background-color: #1c94c4;
+    color: white;
+}
+
+.panel-default .panel-body{
+    background-color: white;
+ 
+}
